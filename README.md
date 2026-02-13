@@ -84,6 +84,15 @@ This project helped in understanding:
 
 ---
 
+## 📸 Screenshots
+
+<img width="927" height="742" alt="Screenshot 2026-02-13 224011" src="https://github.com/user-attachments/assets/19583cf1-c398-4ac6-8123-e6c3b47beaff" />
+<img width="1001" height="801" alt="Screenshot 2026-02-13 224024" src="https://github.com/user-attachments/assets/7ecf0fc1-ea16-43d6-9911-698554dead02" />
+<img width="1037" height="830" alt="Screenshot 2026-02-13 224034" src="https://github.com/user-attachments/assets/24d7ec74-cf51-463c-8d8c-eb2026278614" />
+<img width="1094" height="868" alt="Screenshot 2026-02-13 224339" src="https://github.com/user-attachments/assets/70fbf267-e26d-4e9c-9421-71f2cd252ca9" />
+
+---
+
 ## 👨‍💻 Author
 
 **Soni G**  
