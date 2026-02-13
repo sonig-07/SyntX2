@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SyntX Compiler</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <!-- CodeMirror CDN -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚡ SyntX</h1>
+
+    <div class="controls">
+        <select id="language" onchange="loadSample()">
+            <option value="java">Java</option>
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+        </select>
+
+        <button onclick="runCode()">Run ▶</button>
+        <button onclick="clearOutput()">Clear Output</button>
+        <button onclick="resetCode()">Reset Code</button>
+
+        <input type="file" id="fileInput" onchange="loadFile()">
+    </div>
+
+    <textarea id="code"></textarea>
+
+    <div class="output">
+        <h3>Output</h3>
+        <pre id="outputBox"></pre>
+        <div id="execTime"></div>
+    </div>
+</div>
+
+<script>
+let editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: true,
+    theme: "default",
+    mode: "text/x-java"
+});
+
+const samples = {
+    java: `public class Main {
+    public static void main(String[] args) {
+        greet();
+    }
+
+    public static void greet() {
+        System.out.println("Hello from SyntX (Java)");
+    }
+}`,
+
+    python: `class Main:
+    @staticmethod
+    def greet():
+        print("Hello from SyntX (Python)")
+
+if __name__ == "__main__":
+    Main.greet()`,
+
+    javascript: `class Main {
+    static greet() {
+        console.log("Hello from SyntX (JavaScript)");
+    }
+}
+
+Main.greet();`
+};
+
+function loadSample() {
+    const language = document.getElementById("language").value;
+    editor.setValue(samples[language]);
+
+    if (language === "python") editor.setOption("mode", "python");
+    if (language === "java") editor.setOption("mode", "text/x-java");
+    if (language === "javascript") editor.setOption("mode", "javascript");
+}
+
+async function runCode() {
+    const code = editor.getValue();
+    const language = document.getElementById("language").value;
+
+    const response = await fetch("/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ language, code })
+    });
+
+    const data = await response.json();
+
+    const outputBox = document.getElementById("outputBox");
+    const execTime = document.getElementById("execTime");
+
+    if (data.error) {
+        outputBox.style.color = "red";
+        outputBox.innerText = data.error;
+    } else {
+        outputBox.style.color = "#00ff88";
+        outputBox.innerText = data.output;
+    }
+
+    execTime.innerText = "Execution Time: " + data.execution_time + " sec";
+}
+
+function clearOutput() {
+    document.getElementById("outputBox").innerText = "";
+    document.getElementById("execTime").innerText = "";
+}
+
+function resetCode() {
+    loadSample();
+}
+
+function loadFile() {
+    const file = document.getElementById("fileInput").files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        editor.setValue(e.target.result);
+    };
+    reader.readAsText(file);
+}
+
+window.onload = loadSample;
+</script>
+
+</body>
+</html>
